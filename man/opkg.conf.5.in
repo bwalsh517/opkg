@@ -90,6 +90,9 @@ If no dest is specified \fBroot\fP is specified automatically to \fB/\fP.
 \fBdownload_only\fP
 No action -- download only (default is 0).
 .TP
+\fBescape_url\fP (CURL)
+Needed to work around AWS S3 handling of + in filenames. Uses curl_easy_escape to escape urls (default is 0).
+.TP
 \fBfollow_location\fP (CURL)
 Follows any "Location:" header that the server sends as part of the HTTP header (default is 0).
 .TP

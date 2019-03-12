@@ -298,6 +298,23 @@ int opkg_download_backend(const char *src, const char *dest,
 
     curl_easy_setopt(curl, CURLOPT_URL, src);
 
+    /*
+     * If this is an http/https request get the part of the url after the slash
+     * after the hostname if there is anything.
+     * http://example.com/path/to/file.ipk
+     * url_path = path/to/file.ipk
+     */
+    if (opkg_config->escape_url) && ( strstr(url, "http") == url ) {
+        char *url_path = strstr(url, "://") + 3;
+        url_path = index(url_path, '/') + 1;
+        if (url_path) && (strlen(url_path) > 0) {
+            char *escaped_url = curl_easy_escape(curl, url_path, 0);
+
+            curl_easy_setopt(curl, CURLOPT_REQUEST_TARGET, escaped_url);
+            curl_free(escaped_url);
+        }
+    }
+
 #ifdef HAVE_SSLCURL
     if (opkg_config->ftp_explicit_ssl) {
         /*
